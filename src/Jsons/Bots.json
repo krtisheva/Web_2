@@ -1,0 +1,33 @@
+[
+    {
+        "id": "1",
+        "token": "1",
+        "state": {
+            "status": "OK",
+            "mood": "normal",
+            "mode": "off"
+        },
+        "cfg": "1"
+
+    },
+    {
+        "id": "2",
+        "token": "2",
+        "state": {
+            "status": "offline",
+            "mood": "tired",
+            "mode": "manual"
+        },
+        "cfg": "2"
+    },
+    {
+        "id": "3",
+        "token": "3",
+        "state": {
+            "status": "error",
+            "mood": "tired",
+            "mode": "auto"
+        },
+        "cfg": "3"
+    }
+]
