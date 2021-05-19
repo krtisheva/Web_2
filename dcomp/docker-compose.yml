@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+    db:
+        image: docker.io/wasilkas/bots-users
+        ports:
+            - 8080:8080
+
+    userMobile:
+        image: docker.io/krtisheva/user-mobile
+        ports:
+            - 80:80
+        depends_on:
+            - db

@@ -1,33 +1,44 @@
-import users from '../Jsons/Users.json'
-import bots from '../Jsons/Bots.json'
 import React, { Component } from 'react'
 import { Container, Table } from 'react-bootstrap'
 import './Authorization.css'
 
-const getBotsByLogin = (login) => {
-  let user_bots_id
-  for (let j = 0; j < users.length; j++){
-    if (users[j].login === login)
-      user_bots_id = users[j].bots
+const getBotsByLogin = async(login) => {
+  try {
+    const response = await fetch(`http://localhost:8080/bots/${login}`,{
+    method: "GET",  
+    headers: {"Access-Control-Allow-Origin": `*`}});
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (err) {
+    console.error(err.message);
   }
-  
-  let list_bots = []
-  for (let i = 0; i < user_bots_id.length; i++){
-    for (let j = 0; j < bots.length; j++){
-      if (bots[j].id === user_bots_id[i])
-      list_bots.push(bots[j])
-    }
+}
+
+const addBot = async (login) => {
+  try {
+    let data = { "token": `${login}` }
+    const response = await fetch(`http://localhost:8080/bots`,{
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }});
+  } catch (err) {
+    console.error(err.message);
   }
-  return list_bots
 }
 
 export default class BotsState extends Component {
+  constructor(props) {
+    super(props)
+    this.state = []
+  }
+
   render() {
+    getBotsByLogin(this.props.login).then(value => (this.setState(value)))
+    const bots = Object.values(this.state);
     return (
       <Container className="container">
         <div>
           <h3 className="mt-4">{this.props.login}: Состояние ботов</h3>
-
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -39,8 +50,8 @@ export default class BotsState extends Component {
               </tr>
             </thead>
             <tbody>
-              {(getBotsByLogin(this.props.login)).map(bot => (
-                <tr>
+              { bots.map(bot => (
+                <tr key={bot._id}>
                   <td>{bot.token}</td>
                   <td>{bot.state.status}</td>
                   <td>{bot.state.mood}</td>
@@ -50,7 +61,7 @@ export default class BotsState extends Component {
               ))}
             </tbody>
           </Table>
-          <button className="button" onClick={()=>{this.props.setBots(this.props.add_bots === true ? false : true)}}>Добавить нового бота</button>
+          <button className="button" onClick={()=>{addBot(this.props.login)}}>Добавить нового бота</button>
         </div>
       </Container>
     );
